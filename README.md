@@ -15,3 +15,34 @@ Technologies and Tools that are used in this projects are:
     Dependency Injection
     Local Notification
     Alarm Manager
+
+
+## Screenshot
+
+<table border>
+    <tr>
+        <th style="text-align:center">Main Screen</th>
+        <th style="text-align:center">Set Notify Screen</th>
+        <th style="text-align:center">Empty Screen</th>
+        <th style="text-align:center">Select Date</th>
+    </tr>
+    <tr>
+        <td><img src="./screenshot/main_screen.png" alt="" width="200"></td>
+        <td><img src="./screenshot/set_notify_screen.png" alt="" width="200"></td>
+        <td><img src="./screenshot/empty_screen.png" alt="" width="200"></td>
+        <td><img src="./screenshot/select_date.png" alt="" width="200"></td>
+    <tr>
+</table>
+
+<table border>
+    <tr>
+        <th style="text-align:center">Select time</th>
+        <th style="text-align:center">Enter Count</th>
+    </tr>
+    <tr>
+        <td><img src="./screenshot/select_time.png" alt="" width="200"></td>
+        <td><img src="./screenshot/enter_count.png" alt="" width="200"></td>
+    <tr>
+</table>
+
+
