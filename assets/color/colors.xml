@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<color name="primary_textColor">#ff262A35</color>
+
+<color name="secondaryText-color">#ffB3B6BE</color>
+
+<color name="captionTextColor">#ff7888B2</color>
+
+<color name="primaryColor">#ff4682fa</color>
+
+<color name="darkPrimaryColor">#ff3033a8</color>
+
+<color name="secondaryColor">#ff129683</color>
+
+<color name="white">#FFFFFFFF</color>
+
+<color name="black">#FF000000</color>
+
+</resources>
