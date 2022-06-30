@@ -7,6 +7,9 @@ import 'package:notify_me/src/bloc/main_bloc/main_bloc.dart';
 import 'package:notify_me/src/configs/app_theme.dart';
 import 'package:notify_me/src/core/constants/general_constant.dart';
 
+import '../../configs/app_routes.dart';
+import '../../core/constants/route_constant.dart';
+
 class MainView extends StatelessWidget {
   MainView({Key? key}) : super(key: key);
 
@@ -15,7 +18,7 @@ class MainView extends StatelessWidget {
     localization = localization ?? AppLocalizations.of(context);
     return BlocProvider(
       create: (context) => RepositoryProvider.of<MainBloc>(context),
-      child: BlocBuilder<MainBloc,MainState>(
+      child: BlocBuilder<MainBloc, MainState>(
         builder: (context, state) {
           return Scaffold(
             body: _MainWidget(),
@@ -27,9 +30,6 @@ class MainView extends StatelessWidget {
       ),
     );
   }
-
-
-
 }
 
 class _MainWidget extends StatelessWidget {
@@ -64,17 +64,20 @@ class _MainWidget extends StatelessWidget {
 }
 
 class _MainFab extends StatelessWidget {
-  const _MainFab({
+  _MainFab({
     Key? key,
   }) : super(key: key);
 
+  late BuildContext _context;
+
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return Directionality(
       textDirection: TextDirection.ltr,
       child: OutlinedButton.icon(
         onPressed: () {
-          context.read<MainBloc>().add(MainNavigatedTo(context: context));
+          context.read<MainBloc>().add(MainNavigatedToSetNotifyScreen(navigateToSetNotifyScreen: _navigateToSetNotifyScreen));
         },
         label: Text(
           localization!.add,
@@ -94,5 +97,10 @@ class _MainFab extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _navigateToSetNotifyScreen() {
+    Navigator.of(_context).push(
+        AppRoutes.generateRoute(RouteSettings(name: kSetNotifScreenRoute)));
   }
 }

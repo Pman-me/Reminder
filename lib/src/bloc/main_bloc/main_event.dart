@@ -6,8 +6,9 @@ abstract class MainEvent extends Equatable{
   List<Object> get props =>[];
 }
 
-class MainNavigatedTo extends MainEvent{
-  BuildContext context;
+class MainNavigatedToSetNotifyScreen extends MainEvent{
+  void Function() navigateToSetNotifyScreen;
 
-  MainNavigatedTo({required this.context});
+
+  MainNavigatedToSetNotifyScreen({required this.navigateToSetNotifyScreen});
 }
