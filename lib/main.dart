@@ -1,13 +1,13 @@
+import 'package:Reminder/src/core/constants/general_constant.dart';
+import 'package:Reminder/src/core/helper/alarm_manager.dart';
+import 'package:Reminder/src/core/util/extensions.dart';
+import 'package:Reminder/src/core/util/notification_api.dart';
+import 'package:Reminder/src/data/model/notification_scheduler_model.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:notify_me/life_cycle.dart';
-import 'package:notify_me/src/core/constants/general_constant.dart';
-import 'package:notify_me/src/core/helper/alarm_manager.dart';
-import 'package:notify_me/src/core/util/extensions.dart';
-import 'package:notify_me/src/core/util/notification_api.dart';
-import 'package:notify_me/src/data/model/notification_scheduler_model.dart';
 
 import 'app.dart';
+import 'life_cycle.dart';
 import 'src/data/local/object_box_helper.dart';
 
 Future<void> callbackDispatcher() async {
@@ -15,7 +15,7 @@ Future<void> callbackDispatcher() async {
   try {
     ObjectBoxHelper objectBox = ObjectBoxHelper();
     await objectBox.init();
-    List<NotificationSchedulerModel> notificationSchedulers =
+    List notificationSchedulers =
         objectBox.getDateAndTimes();
 
     for (int i = 0; i < notificationSchedulers.length; i++) {

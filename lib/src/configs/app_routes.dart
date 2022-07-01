@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:notify_me/src/view/main_screen/main_view.dart';
 
 import '../core/constants/route_constant.dart';
+import '../view/main_screen/main_view.dart';
 import '../view/set_notify_screen/set_notify_view.dart';
 
 class AppRoutes {

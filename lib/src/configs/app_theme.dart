@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:notify_me/gen/colors.gen.dart';
+
+import '../../gen/colors.gen.dart';
 
 ThemeData get lightTheme => ThemeData.light().copyWith(
       appBarTheme: const AppBarTheme(

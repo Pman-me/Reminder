@@ -1,7 +1,7 @@
-import 'package:notify_me/src/data/model/notification_scheduler_model.dart';
 import 'package:objectbox/objectbox.dart';
 
 import '../../data/local/objectbox.g.dart';
+import '../model/notification_scheduler_model.dart';
 
 class ObjectBoxHelper {
   Store? _store;

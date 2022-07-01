@@ -1,12 +1,13 @@
 
+import 'package:Reminder/src/bloc/main_bloc/main_bloc.dart';
+import 'package:Reminder/src/bloc/set_notif_bloc/set_notify_bloc.dart';
+import 'package:Reminder/src/configs/app_routes.dart';
+import 'package:Reminder/src/configs/app_theme.dart';
+import 'package:Reminder/src/core/constants/route_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:notify_me/src/bloc/main_bloc/main_bloc.dart';
-import 'package:notify_me/src/bloc/set_notif_bloc/set_notify_bloc.dart';
-import 'package:notify_me/src/configs/app_routes.dart';
-import 'package:notify_me/src/configs/app_theme.dart';
-import 'package:notify_me/src/core/constants/route_constant.dart';
+
 
 import 'src/data/local/object_box_helper.dart';
 import 'src/view/main_screen/main_view.dart';

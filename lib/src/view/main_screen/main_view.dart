@@ -1,13 +1,14 @@
+import 'package:Reminder/src/configs/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notify_me/gen/assets.gen.dart';
-import 'package:notify_me/gen/colors.gen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:notify_me/src/bloc/main_bloc/main_bloc.dart';
-import 'package:notify_me/src/configs/app_theme.dart';
-import 'package:notify_me/src/core/constants/general_constant.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../../gen/assets.gen.dart';
+import '../../../gen/colors.gen.dart';
+import '../../bloc/main_bloc/main_bloc.dart';
 import '../../configs/app_routes.dart';
+import '../../core/constants/general_constant.dart';
 import '../../core/constants/route_constant.dart';
 
 class MainView extends StatelessWidget {
@@ -77,7 +78,8 @@ class _MainFab extends StatelessWidget {
       textDirection: TextDirection.ltr,
       child: OutlinedButton.icon(
         onPressed: () {
-          context.read<MainBloc>().add(MainNavigatedToSetNotifyScreen(navigateToSetNotifyScreen: _navigateToSetNotifyScreen));
+          context.read<MainBloc>().add(MainNavigatedToSetNotifyScreen(
+              navigateToSetNotifyScreen: _navigateToSetNotifyScreen));
         },
         label: Text(
           localization!.add,

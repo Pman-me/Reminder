@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:notify_me/src/core/constants/general_constant.dart';
+
+import '../constants/general_constant.dart';
 
 class NotificationApi {
   static final _notifications = FlutterLocalNotificationsPlugin();

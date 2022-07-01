@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:Reminder/src/core/util/extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:notify_me/src/core/constants/general_constant.dart';
-import 'package:notify_me/src/core/util/extensions.dart';
-import 'package:notify_me/src/data/model/notification_scheduler_model.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/constants/general_constant.dart';
 import '../../core/helper/alarm_manager.dart';
 import '../../data/local/object_box_helper.dart';
+import '../../data/model/notification_scheduler_model.dart';
 import '../../view/set_notify_screen/set_notify_view.dart';
 
 part 'set_notify_event.dart';

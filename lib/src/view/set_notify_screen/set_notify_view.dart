@@ -2,15 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notify_me/gen/assets.gen.dart';
-import 'package:notify_me/src/bloc/set_notif_bloc/set_notify_bloc.dart';
-import 'package:notify_me/src/configs/app_theme.dart';
-import 'package:notify_me/src/core/constants/general_constant.dart';
-import 'package:notify_me/src/data/model/notification_scheduler_model.dart';
-import 'package:notify_me/src/view/components/nil.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
+import '../../../gen/assets.gen.dart';
+import '../../bloc/set_notif_bloc/set_notify_bloc.dart';
+import '../../configs/app_theme.dart';
+import '../../core/constants/general_constant.dart';
 import '../../data/local/object_box_helper.dart';
+import '../../data/model/notification_scheduler_model.dart';
+import '../components/nil.dart';
 
 class SetNotifView extends StatelessWidget {
   SetNotifView({Key? key}) : super(key: key);
