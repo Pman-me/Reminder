@@ -1,14 +1,10 @@
 part of 'main_bloc.dart';
 
-abstract class MainEvent extends Equatable{
-
+abstract class MainEvent extends Equatable {
   @override
-  List<Object> get props =>[];
+  List<Object> get props => [];
 }
 
-class MainNavigatedToSetNotifyScreen extends MainEvent{
-  void Function() navigateToSetNotifyScreen;
-
-
-  MainNavigatedToSetNotifyScreen({required this.navigateToSetNotifyScreen});
+class MainNavigatedToSetNotifyScreen extends MainEvent {
+  MainNavigatedToSetNotifyScreen();
 }

@@ -19,7 +19,17 @@ class MainView extends StatelessWidget {
     localization = localization ?? AppLocalizations.of(context);
     return BlocProvider(
       create: (context) => RepositoryProvider.of<MainBloc>(context),
-      child: BlocBuilder<MainBloc, MainState>(
+      child: BlocConsumer<MainBloc, MainState>(
+        buildWhen: (previous,current){
+          if(current is MainInitial) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+        listener: (context,state){
+          _navigateToSetNotifyScreen(context);
+        },
         builder: (context, state) {
           return Scaffold(
             body: _MainWidget(),
@@ -30,6 +40,11 @@ class MainView extends StatelessWidget {
         },
       ),
     );
+  }
+
+  _navigateToSetNotifyScreen(BuildContext context) {
+    Navigator.of(context).push(
+        AppRoutes.generateRoute(const RouteSettings(name: kSetNotifScreenRoute)));
   }
 }
 
@@ -69,17 +84,13 @@ class _MainFab extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  late BuildContext _context;
-
   @override
   Widget build(BuildContext context) {
-    _context = context;
     return Directionality(
       textDirection: TextDirection.ltr,
       child: OutlinedButton.icon(
         onPressed: () {
-          context.read<MainBloc>().add(MainNavigatedToSetNotifyScreen(
-              navigateToSetNotifyScreen: _navigateToSetNotifyScreen));
+          context.read<MainBloc>().add(MainNavigatedToSetNotifyScreen());
         },
         label: Text(
           localization!.add,
@@ -101,8 +112,5 @@ class _MainFab extends StatelessWidget {
     );
   }
 
-  _navigateToSetNotifyScreen() {
-    Navigator.of(_context).push(
-        AppRoutes.generateRoute(RouteSettings(name: kSetNotifScreenRoute)));
-  }
+
 }

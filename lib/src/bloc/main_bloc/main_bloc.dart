@@ -11,6 +11,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   }
 
   _onNavigatedToSetNotifyScreen(MainNavigatedToSetNotifyScreen event, Emitter<MainState> emit) {
-    event.navigateToSetNotifyScreen();
+    emit(MainNavigateToSetNotifyScreen());
   }
 }

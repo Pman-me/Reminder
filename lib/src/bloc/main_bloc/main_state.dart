@@ -1,9 +1,7 @@
 part of 'main_bloc.dart';
 
-abstract class MainState extends Equatable{
-
-  @override
-  List<Object> get props =>[];
-}
+abstract class MainState {}
 
 class MainInitial extends MainState {}
+
+class MainNavigateToSetNotifyScreen extends MainState {}
