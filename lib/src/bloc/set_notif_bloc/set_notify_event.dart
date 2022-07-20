@@ -5,27 +5,41 @@ abstract class SetNotifyEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class SetNotifyStarted extends SetNotifyEvent{}
+class SetNotifyStarted extends SetNotifyEvent {}
 
-class SetNotifySelectDateAndTimeClicked extends SetNotifyEvent {
-  BuildContext context;
+class SetNotifySelectDateAndTimeClicked extends SetNotifyEvent {}
 
-  SetNotifySelectDateAndTimeClicked(this.context);
-}
-
-class SetNotifyAdded extends SetNotifyEvent{
+class SetNotifyReminderAddedEvent extends SetNotifyEvent {
   NotificationSchedulerModel notificationSchedulerModel;
 
-  SetNotifyAdded({required this.notificationSchedulerModel});
+  SetNotifyReminderAddedEvent({required this.notificationSchedulerModel});
 }
-class SetNotifyUpdated extends SetNotifyEvent{
+
+class SetNotifyUpdatedEvent extends SetNotifyEvent {
   List<NotificationSchedulerModel> notificationSchedulers;
 
-  SetNotifyUpdated({required this.notificationSchedulers});
+  SetNotifyUpdatedEvent({required this.notificationSchedulers});
 }
 
-class SetNotifyDisabled extends SetNotifyEvent{
+class SetNotifyReminerDisabledEvent extends SetNotifyEvent {
   int notificationSchedulerIndex;
 
-  SetNotifyDisabled({required this.notificationSchedulerIndex});
+  SetNotifyReminerDisabledEvent({required this.notificationSchedulerIndex});
+}
+
+class SetNotifyDateAndTimeTakenEvent extends SetNotifyEvent {
+  Jalali selectedJalaliDateTime;
+  TimeOfDay endTimeOfDay;
+  TimeOfDay startTimeOfDay;
+
+  SetNotifyDateAndTimeTakenEvent(
+      {required this.selectedJalaliDateTime,
+      required this.endTimeOfDay,
+      required this.startTimeOfDay});
+}
+
+class SetNotifyReminderCountTaken extends SetNotifyEvent{
+  int reminderCount;
+
+  SetNotifyReminderCountTaken({required this.reminderCount});
 }

@@ -1,12 +1,32 @@
 part of 'set_notify_bloc.dart';
 
-enum SetNotifyStatus{initial,success,update}
+abstract class SetNotifyState {
+  late List<NotificationSchedulerModel> notificationSchedulersList;
+}
 
-class SetNotifyState  {
+class SetNotifyInitial extends SetNotifyState {}
 
-  SetNotifyStatus status;
+class SetNotifySuccess extends SetNotifyState {
+  @override
   List<NotificationSchedulerModel> notificationSchedulersList;
 
-  SetNotifyState({required this.status, this.notificationSchedulersList = const[]});
-
+  SetNotifySuccess({required this.notificationSchedulersList});
 }
+
+class SetNotifyUpdate extends SetNotifyState {
+  @override
+  List<NotificationSchedulerModel> notificationSchedulersList;
+
+  SetNotifyUpdate({required this.notificationSchedulersList});
+}
+
+class SetNotifyShowEnterNotificationCountDialog extends SetNotifyState {
+  final textEditingController;
+
+  SetNotifyShowEnterNotificationCountDialog(
+      {required this.textEditingController});
+}
+
+class SetNotifyShowDateAndTimePicker extends SetNotifyState {}
+
+class SetNotifyShowSnackBar extends SetNotifyState {}

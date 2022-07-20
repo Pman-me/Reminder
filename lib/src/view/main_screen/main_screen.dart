@@ -11,8 +11,8 @@ import '../../configs/app_routes.dart';
 import '../../core/constants/general_constant.dart';
 import '../../core/constants/route_constant.dart';
 
-class MainView extends StatelessWidget {
-  MainView({Key? key}) : super(key: key);
+class MainScreen extends StatelessWidget {
+  MainScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

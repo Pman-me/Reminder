@@ -10,7 +10,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 
 import 'src/data/local/object_box_helper.dart';
-import 'src/view/main_screen/main_view.dart';
+import 'src/view/main_screen/main_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NotifyMeApp extends StatelessWidget {
@@ -43,7 +43,7 @@ class NotifyMeApp extends StatelessWidget {
         ],
         supportedLocales: AppLocalizations.supportedLocales,
         locale: Locale('fa'),
-        home:  MainView(),
+        home:  MainScreen(),
         initialRoute: kMainScreenRoute,
         onGenerateRoute: AppRoutes.generateRoute,
       ),

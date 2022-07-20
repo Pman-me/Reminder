@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/constants/general_constant.dart';
 import '../../data/local/object_box_helper.dart';
 import '../../data/model/notification_scheduler_model.dart';
-import '../../view/set_notify_screen/set_notify_view.dart';
 
 part 'set_notify_event.dart';
 
@@ -18,99 +17,81 @@ part 'set_notify_state.dart';
 
 class SetNotifyBloc extends Bloc<SetNotifyEvent, SetNotifyState> {
   final TextEditingController _controller = TextEditingController();
-  Jalali? selectedJalaliDateTime;
-  TimeOfDay? endTimeOfDay;
-  TimeOfDay? startTimeOfDay;
+  late Jalali selectedJalaliDateTime;
+  late TimeOfDay endTimeOfDay;
+  late TimeOfDay startTimeOfDay;
   ObjectBoxHelper objectBoxHelper;
   late List<NotificationSchedulerModel> notificationSchedulers;
 
   SetNotifyBloc({required this.objectBoxHelper})
-      : super(SetNotifyState(status: SetNotifyStatus.initial)) {
+      : super(SetNotifyInitial()) {
     on<SetNotifyStarted>(_onStarted);
     on<SetNotifySelectDateAndTimeClicked>(_onSelectDateAndTimeClicked);
-    on<SetNotifyUpdated>(_onUpdated);
-    on<SetNotifyDisabled>(_onDisabled);
+    on<SetNotifyUpdatedEvent>(_onUpdated);
+    on<SetNotifyReminerDisabledEvent>(_onDisabled);
+    on<SetNotifyDateAndTimeTakenEvent>(_onDateAndTimeTaken);
+    on<SetNotifyReminderCountTaken>(_onReminderCountTaken);
   }
 
   _onStarted(SetNotifyStarted event, Emitter<SetNotifyState> emit) async {
     await objectBoxHelper.init();
     await Future.delayed(const Duration(milliseconds: 500));
     notificationSchedulers = objectBoxHelper.getDateAndTimes();
-    emit(SetNotifyState(
-        status: SetNotifyStatus.success,
+    emit(SetNotifySuccess(
         notificationSchedulersList: notificationSchedulers));
   }
 
-  _onUpdated(SetNotifyUpdated event, Emitter<SetNotifyState> emit) {
-    emit(SetNotifyState(
-        status: SetNotifyStatus.update,
+  _onUpdated(SetNotifyUpdatedEvent event, Emitter<SetNotifyState> emit) {
+    emit(SetNotifyUpdate(
         notificationSchedulersList: event.notificationSchedulers));
   }
 
-  _onDisabled(SetNotifyDisabled event, Emitter<SetNotifyState> emit) async {
+  _onDisabled(SetNotifyReminerDisabledEvent event, Emitter<SetNotifyState> emit) async {
     notificationSchedulers[event.notificationSchedulerIndex].isActive = false;
-    add(SetNotifyUpdated(notificationSchedulers: notificationSchedulers));
+    add(SetNotifyUpdatedEvent(notificationSchedulers: notificationSchedulers));
     await Future.delayed(const Duration(milliseconds: 200));
     await cancelAlarmManager(
         alarmId: notificationSchedulers[event.notificationSchedulerIndex].id);
     objectBoxHelper.deleteTime(
         notificationSchedulers[event.notificationSchedulerIndex].id);
     notificationSchedulers.removeAt(event.notificationSchedulerIndex);
-    add(SetNotifyUpdated(notificationSchedulers: notificationSchedulers));
+    add(SetNotifyUpdatedEvent(notificationSchedulers: notificationSchedulers));
   }
 
   _onSelectDateAndTimeClicked(SetNotifySelectDateAndTimeClicked event,
       Emitter<SetNotifyState> emit) async {
-    await _getDateAndTimeFromUser(event.context);
-
-    if (_isEndTimeOfDayAfterStartTimeOfDay()) {
-      String? result =
-          await openDialogEnterNotificationCount(event.context, _controller);
-      if (result != null) {
-        int count = int.parse(result);
-        NotificationSchedulerModel notificationScheduler =
-            await _generateRandomTimesAndSaveThem(count);
-        debugPrint(DateTime.fromMillisecondsSinceEpoch(int.tryParse(
-                notificationScheduler.dateTimesMillisecondsSinceEpoch.first)!)
-            .toString());
-        debugPrint(DateTime.now().millisecondsSinceEpoch.toString());
-        await setAlarmManager(
-            millisecondsSinceEpoch: int.tryParse(
-                notificationScheduler.dateTimesMillisecondsSinceEpoch.first)!,
-            alarmId: notificationScheduler.id);
-
-        notificationSchedulers.add(notificationScheduler);
-        add(SetNotifyUpdated(notificationSchedulers: notificationSchedulers));
-      }
-    } else {
-      if (_checkNonNull()) {
-        showSnackBar(event.context);
-      }
-    }
+    emit(SetNotifyShowDateAndTimePicker());
   }
 
-  Future<void> _getDateAndTimeFromUser(BuildContext context) async {
-    selectedJalaliDateTime = await showPersianDatePicker(
-      context: context,
-      initialDate: Jalali.now(),
-      firstDate: Jalali(1401, 4),
-      lastDate: Jalali(1450, 12),
-    );
-    if (selectedJalaliDateTime == null) return;
-    startTimeOfDay = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
+   _onDateAndTimeTaken(SetNotifyDateAndTimeTakenEvent event, Emitter<SetNotifyState> emit) {
+    selectedJalaliDateTime = event.selectedJalaliDateTime;
+    startTimeOfDay=event.startTimeOfDay;
+    endTimeOfDay=event.endTimeOfDay;
 
-    if (startTimeOfDay == null) return;
+     if (_isEndTimeOfDayAfterStartTimeOfDay(selectedJalaliDateTime,startTimeOfDay,endTimeOfDay)) {
+       emit(SetNotifyShowEnterNotificationCountDialog(textEditingController: _controller));
+     } else {
+       emit(SetNotifyShowSnackBar());
 
-    TimeOfDay endTimeOfDayInitialTime =
-        startTimeOfDay!.replacing(hour: startTimeOfDay!.hour + 1, minute: 0);
+     }
+  }
 
-    endTimeOfDay = await showTimePicker(
-      context: context,
-      initialTime: endTimeOfDayInitialTime,
-    );
+   _onReminderCountTaken(SetNotifyReminderCountTaken event, Emitter<SetNotifyState> emit) async {
+
+     NotificationSchedulerModel notificationScheduler =
+         await _generateRandomTimesAndSaveThem(event.reminderCount);
+
+     await setAlarmManager(
+         millisecondsSinceEpoch: int.tryParse(
+         notificationScheduler.dateTimesMillisecondsSinceEpoch.first)!,
+     alarmId: notificationScheduler.id);
+
+     notificationSchedulers.add(notificationScheduler);
+     add(SetNotifyUpdatedEvent(notificationSchedulers: notificationSchedulers));
+  }
+
+  bool _isEndTimeOfDayAfterStartTimeOfDay(Jalali selectedJalaliDateTime,TimeOfDay startTimeOfDay,TimeOfDay endTimeOfDay) {
+    return endTimeOfDay.isAfter(startTimeOfDay);
   }
 
   Future<NotificationSchedulerModel> _generateRandomTimesAndSaveThem(
@@ -118,23 +99,23 @@ class SetNotifyBloc extends Bloc<SetNotifyEvent, SetNotifyState> {
     Random random = Random();
 
     double doubleEndToMinute =
-        endTimeOfDay!.hour.toDouble() + (endTimeOfDay!.minute.toDouble() / 60);
-    double doubleStarToMinute = startTimeOfDay!.hour.toDouble() +
-        (startTimeOfDay!.minute.toDouble() / 60);
+        endTimeOfDay.hour.toDouble() + (endTimeOfDay.minute.toDouble() / 60);
+    double doubleStarToMinute = startTimeOfDay.hour.toDouble() +
+        (startTimeOfDay.minute.toDouble() / 60);
 
     double interval = (doubleEndToMinute - doubleStarToMinute);
 
     Set<double> generatedRandomMinutesSet = <double>{};
     while (generatedRandomMinutesSet.length < count) {
       double randomTimeOfDay = random.nextDouble() * interval;
-      if (randomTimeOfDay > (kMinimumTimeInterval / 60)) {
+      if (randomTimeOfDay > (kMinimumInterval / 60)) {
         generatedRandomMinutesSet.add(randomTimeOfDay);
       }
     }
 
     //convert set to list for sort
     List<double> generatedRandomMinutesList =
-        generatedRandomMinutesSet.toList();
+    generatedRandomMinutesSet.toList();
     generatedRandomMinutesList.sort();
 
     //create list for convert generated random values to dateTime
@@ -145,54 +126,45 @@ class SetNotifyBloc extends Bloc<SetNotifyEvent, SetNotifyState> {
       int minute = ((generatedRandomMinutesList[i] - hour) * 60).toInt();
 
       millisecondSinceEpoch.add((DateTime(
-                  selectedJalaliDateTime!.toDateTime().year,
-                  selectedJalaliDateTime!.toDateTime().month,
-                  selectedJalaliDateTime!.toDateTime().day,
-                  startTimeOfDay!.hour + hour,
-                  startTimeOfDay!.minute + minute)
-              .millisecondsSinceEpoch)
+          selectedJalaliDateTime.toDateTime().year,
+          selectedJalaliDateTime.toDateTime().month,
+          selectedJalaliDateTime.toDateTime().day,
+          startTimeOfDay.hour + hour,
+          startTimeOfDay.minute + minute)
+          .millisecondsSinceEpoch)
           .toString());
     }
 
     DateTime notificationSchedulerId = DateTime(
-        selectedJalaliDateTime!.toDateTime().year,
-        selectedJalaliDateTime!.toDateTime().month,
-        selectedJalaliDateTime!.toDateTime().day,
+        selectedJalaliDateTime.toDateTime().year,
+        selectedJalaliDateTime.toDateTime().month,
+        selectedJalaliDateTime.toDateTime().day,
         0,
         0);
 
     DateTime startDateTime = DateTime(
-        selectedJalaliDateTime!.toDateTime().year,
-        selectedJalaliDateTime!.toDateTime().month,
-        selectedJalaliDateTime!.toDateTime().day,
-        startTimeOfDay!.hour,
-        startTimeOfDay!.minute);
+        selectedJalaliDateTime.toDateTime().year,
+        selectedJalaliDateTime.toDateTime().month,
+        selectedJalaliDateTime.toDateTime().day,
+        startTimeOfDay.hour,
+        startTimeOfDay.minute);
 
     DateTime endDateTime = DateTime(
-        selectedJalaliDateTime!.toDateTime().year,
-        selectedJalaliDateTime!.toDateTime().month,
-        selectedJalaliDateTime!.toDateTime().day,
-        endTimeOfDay!.hour,
-        endTimeOfDay!.minute);
+        selectedJalaliDateTime.toDateTime().year,
+        selectedJalaliDateTime.toDateTime().month,
+        selectedJalaliDateTime.toDateTime().day,
+        endTimeOfDay.hour,
+        endTimeOfDay.minute);
 
     NotificationSchedulerModel notificationSchedulerModel =
-        NotificationSchedulerModel(
-            id: notificationSchedulerId.millisecondsSinceEpoch,
-            dateTimesMillisecondsSinceEpoch: millisecondSinceEpoch,
-            startDateTime: startDateTime,
-            endDateTime: endDateTime);
+    NotificationSchedulerModel(
+        id: notificationSchedulerId.millisecondsSinceEpoch ~/ 10000,
+        dateTimesMillisecondsSinceEpoch: millisecondSinceEpoch,
+        startDateTime: startDateTime,
+        endDateTime: endDateTime);
 
     objectBoxHelper.put(notificationSchedulerModel);
     return notificationSchedulerModel;
-  }
-
-  bool _checkNonNull() =>
-      selectedJalaliDateTime != null &&
-      startTimeOfDay != null &&
-      endTimeOfDay != null;
-
-  bool _isEndTimeOfDayAfterStartTimeOfDay() {
-    return (_checkNonNull() && endTimeOfDay!.isAfter(startTimeOfDay!));
   }
 
   @override
