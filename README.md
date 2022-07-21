@@ -1,4 +1,4 @@
-## Notify Me | Flutter
+## Reminder | Flutter
 
 
 A Flutter app to notify the user at random times.
