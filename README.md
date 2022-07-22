@@ -13,7 +13,6 @@ Technologies and Tools that are used in this projects are:
     Flutter
     Flutter Bloc
     Dependency Injection
-    MVVM Arcitecture
     Local Notification
     Alarm Manager
 
