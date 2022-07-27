@@ -29,12 +29,24 @@ class NotificationService {
   }
 
   static Future _notificationDetails() async {
+    
+    var vibrationPattern = Int64List(4);
+    vibrationPattern[0] = 0;
+    vibrationPattern[1] = 1000;
+    vibrationPattern[2] = 5000;
+    vibrationPattern[3] = 2000;
+    
     return NotificationDetails(
       android: AndroidNotificationDetails(
         kNotificationChannelId,
         kNotificationChannelName,
-        importance: Importance.defaultImportance,
+        importance: Importance.high,
+        priority: Priority.high,
         enableVibration: true,
+        vibrationPattern: vibrationPattern,
+        playSound: true,
+        sound: RawResourceAndroidNotificationSound(kAlarmSoundName.split('.').first),
+        enableLights: true,
       ),
       iOS: IOSNotificationDetails(),
     );
