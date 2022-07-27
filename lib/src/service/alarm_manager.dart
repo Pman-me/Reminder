@@ -8,8 +8,9 @@ Future setAlarmManager({required int millisecondsSinceEpoch,required int alarmId
       DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch),
       alarmId,
       callbackDispatcher,
-      exact: false,
+      exact: true,
       wakeup: true,
+      allowWhileIdle: true,
       rescheduleOnReboot: true);
 }
 
