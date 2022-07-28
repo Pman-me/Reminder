@@ -1,2 +1,2 @@
 const String kMainScreenRoute = '/';
-const String kSetNotifScreenRoute = '/setNotifScreen';
+const String kSetReminderScreenRoute = '/setNotifScreen';

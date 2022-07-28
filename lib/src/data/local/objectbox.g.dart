@@ -19,35 +19,40 @@ export 'package:objectbox/objectbox.dart'; // so that callers only have to impor
 
 final _entities = <ModelEntity>[
   ModelEntity(
-      id: const IdUid(1, 4684163916119204237),
+      id: const IdUid(1, 4100287068943610296),
       name: 'NotificationSchedulerModel',
-      lastPropertyId: const IdUid(5, 4207226912961270400),
+      lastPropertyId: const IdUid(6, 1504571030042902130),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 2247108771400621908),
+            id: const IdUid(1, 8007190088819872691),
             name: 'id',
             type: 6,
             flags: 129),
         ModelProperty(
-            id: const IdUid(2, 2033000340614234402),
+            id: const IdUid(2, 633035468634449753),
             name: 'dateTimesMillisecondsSinceEpoch',
             type: 30,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 6586488257229317715),
+            id: const IdUid(3, 1270743198945595186),
             name: 'startDateTime',
             type: 10,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 8034259073696041723),
+            id: const IdUid(4, 352783742265620980),
             name: 'endDateTime',
             type: 10,
             flags: 0),
         ModelProperty(
-            id: const IdUid(5, 4207226912961270400),
+            id: const IdUid(5, 5583523746119259944),
             name: 'isActive',
             type: 1,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(6, 1504571030042902130),
+            name: 'notificationTitle',
+            type: 9,
             flags: 0)
       ],
       relations: <ModelRelation>[],
@@ -74,7 +79,7 @@ Future<Store> openStore(
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(1, 4684163916119204237),
+      lastEntityId: const IdUid(1, 4100287068943610296),
       lastIndexId: const IdUid(0, 0),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
@@ -100,12 +105,15 @@ ModelDefinition getObjectBoxModel() {
               .dateTimesMillisecondsSinceEpoch
               .map(fbb.writeString)
               .toList(growable: false));
-          fbb.startTable(6);
+          final notificationTitleOffset =
+              fbb.writeString(object.notificationTitle);
+          fbb.startTable(7);
           fbb.addInt64(0, object.id);
           fbb.addOffset(1, dateTimesMillisecondsSinceEpochOffset);
           fbb.addInt64(2, object.startDateTime.millisecondsSinceEpoch);
           fbb.addInt64(3, object.endDateTime.millisecondsSinceEpoch);
           fbb.addBool(4, object.isActive);
+          fbb.addOffset(5, notificationTitleOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -124,7 +132,9 @@ ModelDefinition getObjectBoxModel() {
               endDateTime: DateTime.fromMillisecondsSinceEpoch(
                   const fb.Int64Reader().vTableGet(buffer, rootOffset, 10, 0)),
               isActive: const fb.BoolReader()
-                  .vTableGet(buffer, rootOffset, 12, false));
+                  .vTableGet(buffer, rootOffset, 12, false),
+              notificationTitle: const fb.StringReader(asciiOptimization: true)
+                  .vTableGet(buffer, rootOffset, 14, ''));
 
           return object;
         })
@@ -155,4 +165,9 @@ class NotificationSchedulerModel_ {
   /// see [NotificationSchedulerModel.isActive]
   static final isActive = QueryBooleanProperty<NotificationSchedulerModel>(
       _entities[0].properties[4]);
+
+  /// see [NotificationSchedulerModel.notificationTitle]
+  static final notificationTitle =
+      QueryStringProperty<NotificationSchedulerModel>(
+          _entities[0].properties[5]);
 }

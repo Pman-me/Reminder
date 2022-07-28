@@ -1,10 +1,14 @@
 {
   "add": "اضافه کردن",
   "save": "ثبت",
+  "count": "تعداد",
+  "title": "عنوان",
   "setNotif": "تنظیم اعلان",
   "selectTime": "انتخاب بازه زمانی",
-  "notificationCount": "تعداد اعلان",
+  "notificationCount": " : تعداد اعلان",
   "errorTitle": "انتهای بازه زمانی باید بزرگتر از شروع بازه باشد!",
   "empty": "هیچ اعلان تنظیم شده ای وجود ندارد!",
-  "notificationCount": "تعداد اطلاع : "
+  "notificationCountAndTitle": "تعداد و عنوان اطلاع : ",
+  "notificationRemainingCount": "تعداد باقیمانده : "
+
 }

@@ -1,6 +1,6 @@
 
 import 'package:Reminder/src/bloc/main_bloc/main_bloc.dart';
-import 'package:Reminder/src/bloc/set_notif_bloc/set_notify_bloc.dart';
+import 'package:Reminder/src/bloc/set_reminder_bloc/set_reminder_bloc.dart';
 import 'package:Reminder/src/configs/app_routes.dart';
 import 'package:Reminder/src/configs/app_theme.dart';
 import 'package:Reminder/src/core/constants/route_constant.dart';
@@ -28,7 +28,7 @@ class NotifyMeApp extends StatelessWidget {
           lazy: true,
         ),
         RepositoryProvider(
-          create: (context) => SetNotifyBloc(objectBoxHelper: RepositoryProvider.of<ObjectBoxHelper>(context)),
+          create: (context) => SetReminderBloc(objectBoxHelper: RepositoryProvider.of<ObjectBoxHelper>(context)),
           lazy: true,
         ),
       ],

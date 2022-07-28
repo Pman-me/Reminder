@@ -44,7 +44,7 @@ class MainScreen extends StatelessWidget {
 
   _navigateToSetNotifyScreen(BuildContext context) {
     Navigator.of(context).push(
-        AppRoutes.generateRoute(const RouteSettings(name: kSetNotifScreenRoute)));
+        AppRoutes.generateRoute(const RouteSettings(name: kSetReminderScreenRoute)));
   }
 }
 

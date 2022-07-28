@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../core/constants/general_constant.dart';
@@ -30,12 +32,14 @@ class NotificationService {
 
   static Future _notificationDetails() async {
     
-    var vibrationPattern = Int64List(4);
+    var vibrationPattern = Int64List(6);
     vibrationPattern[0] = 0;
-    vibrationPattern[1] = 1000;
-    vibrationPattern[2] = 5000;
-    vibrationPattern[3] = 2000;
-    
+    vibrationPattern[1] = 500;
+    vibrationPattern[2] = 500;
+    vibrationPattern[3] = 500;
+    vibrationPattern[4] = 500;
+    vibrationPattern[5] = 500;
+
     return NotificationDetails(
       android: AndroidNotificationDetails(
         kNotificationChannelId,

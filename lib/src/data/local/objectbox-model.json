@@ -4,41 +4,46 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:4684163916119204237",
-      "lastPropertyId": "5:4207226912961270400",
+      "id": "1:4100287068943610296",
+      "lastPropertyId": "6:1504571030042902130",
       "name": "NotificationSchedulerModel",
       "properties": [
         {
-          "id": "1:2247108771400621908",
+          "id": "1:8007190088819872691",
           "name": "id",
           "type": 6,
           "flags": 129
         },
         {
-          "id": "2:2033000340614234402",
+          "id": "2:633035468634449753",
           "name": "dateTimesMillisecondsSinceEpoch",
           "type": 30
         },
         {
-          "id": "3:6586488257229317715",
+          "id": "3:1270743198945595186",
           "name": "startDateTime",
           "type": 10
         },
         {
-          "id": "4:8034259073696041723",
+          "id": "4:352783742265620980",
           "name": "endDateTime",
           "type": 10
         },
         {
-          "id": "5:4207226912961270400",
+          "id": "5:5583523746119259944",
           "name": "isActive",
           "type": 1
+        },
+        {
+          "id": "6:1504571030042902130",
+          "name": "notificationTitle",
+          "type": 9
         }
       ],
       "relations": []
     }
   ],
-  "lastEntityId": "1:4684163916119204237",
+  "lastEntityId": "1:4100287068943610296",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

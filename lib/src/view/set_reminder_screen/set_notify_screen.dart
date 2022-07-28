@@ -1,3 +1,4 @@
+import 'package:Reminder/src/bloc/set_reminder_bloc/set_reminder_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,28 +6,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 import '../../../gen/assets.gen.dart';
-import '../../bloc/set_notif_bloc/set_notify_bloc.dart';
 import '../../configs/app_theme.dart';
 import '../../core/constants/general_constant.dart';
 import '../../data/local/object_box_helper.dart';
 import '../../data/model/notification_scheduler_model.dart';
 import '../components/nil.dart';
 
-class SetNotifyScreen extends StatelessWidget {
-  SetNotifyScreen({Key? key}) : super(key: key);
+class SetReminderScreen extends StatelessWidget {
+  SetReminderScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => SetNotifyBloc(
+      create: (context) => SetReminderBloc(
           objectBoxHelper: RepositoryProvider.of<ObjectBoxHelper>(context))
-        ..add(SetNotifyStarted()),
-      child: BlocBuilder<SetNotifyBloc, SetNotifyState>(
+        ..add(SetReminderStarted()),
+      child: BlocBuilder<SetReminderBloc, SetReminderState>(
         builder: (context, state) {
           return Scaffold(
             appBar: const _SetNotifyAppbar(),
             body: _SetNotifyBody(),
-            floatingActionButton:  (state is SetNotifyInitial)? Nil(): const _SetNotifyFab(),
+            floatingActionButton:  (state is SetReminderInitial)? Nil(): const _SetNotifyFab(),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
           );
@@ -43,21 +43,21 @@ class _SetNotifyBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SetNotifyBloc, SetNotifyState>(
+    return BlocConsumer<SetReminderBloc, SetReminderState>(
         buildWhen: (previous, current) {
-      if (current is SetNotifyShowEnterNotificationCountDialog ||
-          current is SetNotifyShowDateAndTimePicker ||
-          current is SetNotifyShowSnackBar) {
+      if (current is SetReminderShowEnterNotificationCountAndTitleDialog ||
+          current is SetReminderShowDateAndTimePicker ||
+          current is SetReminderShowSnackBar) {
         return false;
       } else {
         return true;
       }
     }, builder: (context, state) {
       late Widget result;
-      if (state is SetNotifyInitial) {
+      if (state is SetReminderInitial) {
         result = _initialView();
       }
-      if (state is SetNotifySuccess || state is SetNotifyUpdate) {
+      if (state is SetReminderSuccess || state is SetReminderUpdate) {
         if (state.notificationSchedulersList.isNotEmpty) {
           var notificationSchedulerList = state.notificationSchedulersList;
           result = _successView(notificationSchedulerList);
@@ -68,14 +68,14 @@ class _SetNotifyBody extends StatelessWidget {
 
       return result;
     }, listener: (context, state) {
-      if (state is SetNotifyShowSnackBar) {
+      if (state is SetReminderShowSnackBar) {
         _showSnackBar(context);
       }
-      if (state is SetNotifyShowDateAndTimePicker) {
+      if (state is SetReminderShowDateAndTimePicker) {
         _getDateAndTimeFromUser(context);
       }
-      if(state is SetNotifyShowEnterNotificationCountDialog){
-        _openEnterReminderCountDialog(context,state.textEditingController);
+      if(state is SetReminderShowEnterNotificationCountAndTitleDialog){
+        _openEnterReminderCountDialog(context,state.countController,state.notificationTitle);
       }
     });
   }
@@ -123,8 +123,8 @@ class _SetNotifyBody extends StatelessWidget {
                   activeColor: lightTheme.colorScheme.primary,
                   value: notificationScheduler.isActive,
                   onChanged: (value) {
-                    context.read<SetNotifyBloc>().add(
-                        SetNotifyReminerDisabledEvent(
+                    context.read<SetReminderBloc>().add(
+                        SetReminderDisabledEvent(
                             notificationSchedulerIndex: index));
                   },
                 ),
@@ -182,8 +182,8 @@ class _SetNotifyFab extends StatelessWidget {
         ),
         onPressed: () {
           context
-              .read<SetNotifyBloc>()
-              .add(SetNotifySelectDateAndTimeClicked());
+              .read<SetReminderBloc>()
+              .add(SetReminderSelectDateAndTimeClicked());
         },
       ),
     );
@@ -244,54 +244,96 @@ void _getDateAndTimeFromUser(BuildContext context) async {
     initialTime: endTimeOfDayInitialTime,
   );
   if(endTimeOfDay ==null) return;
-  context.read<SetNotifyBloc>().add(SetNotifyDateAndTimeTakenEvent(
+  context.read<SetReminderBloc>().add(SetReminderDateAndTimeTakenEvent(
       selectedJalaliDateTime: selectedJalaliDateTime,
       startTimeOfDay: startTimeOfDay,
       endTimeOfDay: endTimeOfDay));
 }
 
 void _openEnterReminderCountDialog(
-    BuildContext context, TextEditingController controller) async {
-  controller.clear();
-  String? result;
+    BuildContext context, TextEditingController countController,TextEditingController notificationController) async {
+  countController.clear();
+  String? reminderCount;
+  String? notificationTitle;
   await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(localization!.notificationCount),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.number,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(justNumberRegex),
-            ],
-            decoration: InputDecoration(
-              filled: true,
-              hoverColor: lightTheme.colorScheme.primary.withOpacity(0.1),
-              enabled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-              focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                      color: lightTheme.colorScheme.primary, width: 1)),
+          title: Text(localization!.notificationCountAndTitle),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.2,
+                  child: TextField(
+                    controller: countController,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(justNumberRegex),
+                    ],
+                    decoration: InputDecoration(
+                      hintText: localization!.count,
+                      hintStyle: lightTheme.textTheme.subtitle1,
+                      filled: true,
+                      hoverColor:
+                      lightTheme.colorScheme.primary.withOpacity(0.1),
+                      enabled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                              color: lightTheme.colorScheme.primary, width: 1)),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                TextField(
+                  controller: notificationController,
+                  keyboardType: TextInputType.text,
+                  maxLines: 2,
+                  decoration: InputDecoration(
+                    hintText: localization!.title,
+                    hintStyle: lightTheme.textTheme.subtitle1,
+                    filled: true,
+                    hoverColor: lightTheme.colorScheme.primary.withOpacity(0.1),
+                    enabled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                            color: lightTheme.colorScheme.primary, width: 1)),
+                  ),
+                )
+              ],
             ),
           ),
           actions: [
             TextButton(
                 onPressed: () {
-                  if (controller.text.isNotEmpty) {
+                  if (countController.text.isNotEmpty && notificationController.text.isNotEmpty) {
                     Navigator.pop(context);
-                    result = controller.text.trim().toString();
+                    reminderCount = countController.text.trim().toString();
+                    notificationTitle = notificationController.text.trim().toString();
                   }
                 },
                 child: Text(localization!.save))
           ],
         );
       });
-  if(result !=null){
-    context.read<SetNotifyBloc>().add(SetNotifyReminderCountTaken(reminderCount: int.parse(result!)));
+  if (reminderCount != null) {
+    context
+        .read<SetReminderBloc>()
+        .add(SetReminderCountAndNotificationTitleTaken(reminderCount: int.parse(reminderCount!),notificationTitle: notificationTitle!));
   }
 }

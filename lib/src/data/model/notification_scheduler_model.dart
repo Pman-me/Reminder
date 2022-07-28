@@ -1,9 +1,8 @@
-import 'package:equatable/equatable.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()
 @Unique(onConflict: ConflictStrategy.replace)
-class NotificationSchedulerModel extends Equatable{
+class NotificationSchedulerModel{
   @Id(assignable: true)
   int id;
   List<String> dateTimesMillisecondsSinceEpoch;
@@ -12,13 +11,12 @@ class NotificationSchedulerModel extends Equatable{
   @Property(type: PropertyType.date)
   DateTime endDateTime;
   bool isActive;
+  String notificationTitle;
 
   NotificationSchedulerModel(
       {required this.id,
       required this.dateTimesMillisecondsSinceEpoch,
       required this.startDateTime,
-      required this.endDateTime,this.isActive = true});
+      required this.endDateTime,this.isActive = true,required this.notificationTitle});
 
-  @override
-  List<Object?> get props =>[isActive];
 }
