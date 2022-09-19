@@ -12,7 +12,6 @@ Technologies and Tools that are used in this projects are:
 
     Flutter
     Flutter Bloc
-    Dependency Injection
     Local Notification
     Alarm Manager
 

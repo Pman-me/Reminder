@@ -12,26 +12,33 @@ import '../../data/local/object_box_helper.dart';
 import '../../data/model/notification_scheduler_model.dart';
 import '../components/nil.dart';
 
-class SetReminderScreen extends StatelessWidget {
-  SetReminderScreen({Key? key}) : super(key: key);
+class SetReminderScreen extends StatefulWidget {
+  const SetReminderScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SetReminderScreen> createState() => _SetReminderScreenState();
+}
+
+class _SetReminderScreenState extends State<SetReminderScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    BlocProvider.of<SetReminderBloc>(context).add(SetReminderStarted());
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SetReminderBloc(
-          objectBoxHelper: RepositoryProvider.of<ObjectBoxHelper>(context))
-        ..add(SetReminderStarted()),
-      child: BlocBuilder<SetReminderBloc, SetReminderState>(
-        builder: (context, state) {
-          return Scaffold(
-            appBar: const _SetNotifyAppbar(),
-            body: _SetNotifyBody(),
-            floatingActionButton:  (state is SetReminderInitial)? Nil(): const _SetNotifyFab(),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
-          );
-        },
-      ),
+    return BlocBuilder<SetReminderBloc, SetReminderState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: const _SetNotifyAppbar(),
+          body: const _SetNotifyBody(),
+          floatingActionButton:
+              (state is SetReminderInitial) ? Nil() : const _SetNotifyFab(),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        );
+      },
     );
   }
 }
@@ -74,8 +81,9 @@ class _SetNotifyBody extends StatelessWidget {
       if (state is SetReminderShowDateAndTimePicker) {
         _getDateAndTimeFromUser(context);
       }
-      if(state is SetReminderShowEnterNotificationCountAndTitleDialog){
-        _openEnterReminderCountDialog(context,state.countController,state.notificationTitle);
+      if (state is SetReminderShowEnterNotificationCountAndTitleDialog) {
+        _openEnterReminderCountDialog(
+            context, state.countController, state.notificationTitle);
       }
     });
   }
@@ -95,8 +103,7 @@ class _SetNotifyBody extends StatelessWidget {
     );
   }
 
-  Widget _successView(
-      List<NotificationSchedulerModel> notificationSchedulerList) {
+  Widget _successView(List<NotificationSchedulerModel> notificationSchedulerList) {
     return ListView.builder(
         itemCount: notificationSchedulerList.length,
         itemBuilder: (context, index) {
@@ -106,16 +113,13 @@ class _SetNotifyBody extends StatelessWidget {
             children: [
               ListTile(
                 title: Text(
-                  notificationScheduler.startDateTime
-                      .toJalali()
-                      .formatFullDate(),
+                  notificationScheduler.startDateTime.toJalali().formatFullDate(),
                   style: lightTheme.textTheme.headline6!
                       .copyWith(fontWeight: FontWeight.w400, fontSize: 16),
                 ),
                 subtitle: Text(
                   localization!.notificationCount +
-                      notificationScheduler
-                          .dateTimesMillisecondsSinceEpoch.length
+                      notificationScheduler.dateTimesMillisecondsSinceEpoch.length
                           .toString(),
                   style: lightTheme.textTheme.caption!.copyWith(fontSize: 16),
                 ),
@@ -123,9 +127,9 @@ class _SetNotifyBody extends StatelessWidget {
                   activeColor: lightTheme.colorScheme.primary,
                   value: notificationScheduler.isActive,
                   onChanged: (value) {
-                    context.read<SetReminderBloc>().add(
-                        SetReminderDisabledEvent(
-                            notificationSchedulerIndex: index));
+                    context
+                        .read<SetReminderBloc>()
+                        .add(SetReminderDisabledEvent(notificationSchedulerIndex: index));
                   },
                 ),
               ),
@@ -167,7 +171,7 @@ class _SetNotifyFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Directionality(
+    return Directionality(
       textDirection: TextDirection.ltr,
       child: FloatingActionButton.extended(
         backgroundColor: lightTheme.colorScheme.primary,
@@ -181,9 +185,7 @@ class _SetNotifyFab extends StatelessWidget {
           color: lightTheme.colorScheme.onPrimary,
         ),
         onPressed: () {
-          context
-              .read<SetReminderBloc>()
-              .add(SetReminderSelectDateAndTimeClicked());
+          context.read<SetReminderBloc>().add(SetReminderSelectDateAndTimeClicked());
         },
       ),
     );
@@ -243,7 +245,7 @@ void _getDateAndTimeFromUser(BuildContext context) async {
     context: context,
     initialTime: endTimeOfDayInitialTime,
   );
-  if(endTimeOfDay ==null) return;
+  if (endTimeOfDay == null) return;
   context.read<SetReminderBloc>().add(SetReminderDateAndTimeTakenEvent(
       selectedJalaliDateTime: selectedJalaliDateTime,
       startTimeOfDay: startTimeOfDay,
@@ -251,7 +253,9 @@ void _getDateAndTimeFromUser(BuildContext context) async {
 }
 
 void _openEnterReminderCountDialog(
-    BuildContext context, TextEditingController countController,TextEditingController notificationController) async {
+    BuildContext context,
+    TextEditingController countController,
+    TextEditingController notificationController) async {
   countController.clear();
   String? reminderCount;
   String? notificationTitle;
@@ -278,8 +282,7 @@ void _openEnterReminderCountDialog(
                       hintText: localization!.count,
                       hintStyle: lightTheme.textTheme.subtitle1,
                       filled: true,
-                      hoverColor:
-                      lightTheme.colorScheme.primary.withOpacity(0.1),
+                      hoverColor: lightTheme.colorScheme.primary.withOpacity(0.1),
                       enabled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -311,8 +314,8 @@ void _openEnterReminderCountDialog(
                     ),
                     focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                            color: lightTheme.colorScheme.primary, width: 1)),
+                        borderSide:
+                            BorderSide(color: lightTheme.colorScheme.primary, width: 1)),
                   ),
                 )
               ],
@@ -321,7 +324,8 @@ void _openEnterReminderCountDialog(
           actions: [
             TextButton(
                 onPressed: () {
-                  if (countController.text.isNotEmpty && notificationController.text.isNotEmpty) {
+                  if (countController.text.isNotEmpty &&
+                      notificationController.text.isNotEmpty) {
                     Navigator.pop(context);
                     reminderCount = countController.text.trim().toString();
                     notificationTitle = notificationController.text.trim().toString();
@@ -332,8 +336,7 @@ void _openEnterReminderCountDialog(
         );
       });
   if (reminderCount != null) {
-    context
-        .read<SetReminderBloc>()
-        .add(SetReminderCountAndNotificationTitleTaken(reminderCount: int.parse(reminderCount!),notificationTitle: notificationTitle!));
+    context.read<SetReminderBloc>().add(SetReminderCountAndNotificationTitleTaken(
+        reminderCount: int.parse(reminderCount!), notificationTitle: notificationTitle!));
   }
 }

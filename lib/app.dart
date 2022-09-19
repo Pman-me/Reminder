@@ -1,4 +1,3 @@
-
 import 'package:Reminder/src/bloc/main_bloc/main_bloc.dart';
 import 'package:Reminder/src/bloc/set_reminder_bloc/set_reminder_bloc.dart';
 import 'package:Reminder/src/configs/app_routes.dart';
@@ -20,32 +19,38 @@ class NotifyMeApp extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider(
-          create: (context) => MainBloc(),
-          lazy: true,
-        ),
-        RepositoryProvider(
           create: (context) => ObjectBoxHelper(),
           lazy: true,
         ),
-        RepositoryProvider(
-          create: (context) => SetReminderBloc(objectBoxHelper: RepositoryProvider.of<ObjectBoxHelper>(context)),
-          lazy: true,
-        ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: lightTheme,
-        localizationsDelegates: [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => MainBloc(),
+            lazy: true,
+          ),
+          BlocProvider(
+            create: (context) =>
+                SetReminderBloc(
+                    objectBoxHelper: RepositoryProvider.of<ObjectBoxHelper>(context)),
+            lazy: true,
+          ),
         ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: Locale('fa'),
-        home:  MainScreen(),
-        initialRoute: kMainScreenRoute,
-        onGenerateRoute: AppRoutes.generateRoute,
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: lightTheme,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('fa'),
+          home: MainScreen(),
+          initialRoute: kMainScreenRoute,
+          onGenerateRoute: AppRoutes.generateRoute,
+        ),
       ),
     );
   }

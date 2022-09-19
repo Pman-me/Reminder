@@ -12,33 +12,30 @@ import '../../core/constants/general_constant.dart';
 import '../../core/constants/route_constant.dart';
 
 class MainScreen extends StatelessWidget {
-  MainScreen({Key? key}) : super(key: key);
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     localization = localization ?? AppLocalizations.of(context);
-    return BlocProvider(
-      create: (context) => RepositoryProvider.of<MainBloc>(context),
-      child: BlocConsumer<MainBloc, MainState>(
-        buildWhen: (previous,current){
-          if(current is MainInitial) {
-            return true;
-          } else {
-            return false;
-          }
-        },
-        listener: (context,state){
-          _navigateToSetNotifyScreen(context);
-        },
-        builder: (context, state) {
-          return Scaffold(
-            body: _MainWidget(),
-            floatingActionButton: _MainFab(),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerFloat,
-          );
-        },
-      ),
+    return BlocConsumer<MainBloc, MainState>(
+      buildWhen: (previous,current){
+        if(current is MainInitial) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      listener: (context,state){
+        _navigateToSetNotifyScreen(context);
+      },
+      builder: (context, state) {
+        return Scaffold(
+          body: _MainWidget(),
+          floatingActionButton: _MainFab(),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+        );
+      },
     );
   }
 
